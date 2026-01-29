@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vinyl Store | Магазин виниловых пластинок</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: #0a0a0a;
+            color: #f0f0f0;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Шапка */
+        header {
+            background: rgba(0, 0, 0, 0.95);
+            padding: 20px 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid #333;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 32px;
+            font-weight: bold;
+            color: #ff4757;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo::before {
+            content: "♫";
+            font-size: 36px;
+        }
+        
+        nav a {
+            color: #f0f0f0;
+            text-decoration: none;
+            margin-left: 25px;
+            font-size: 16px;
+            transition: color 0.3s;
+        }
+        
+        nav a:hover {
+            color: #ff4757;
+        }
+        
+        .auth-btn {
+            background: #ff4757;
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.3s;
+        }
+        
+        .auth-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        /* Герой секция */
+        .hero {
+            background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), 
+                        url('https://images.unsplash.com/photo-1571974096035-bc19ce5d75ed?auto=format&fit=crop&w=1200');
+            background-size: cover;
+            background-position: center;
+            padding: 180px 0 100px;
+            text-align: center;
+            margin-top: 80px;
+        }
+        
+        .hero h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            color: #ffffff;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        .hero p {
+            font-size: 20px;
+            margin-bottom: 40px;
+            color: #cccccc;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .cta-button {
+            background: #ff4757;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 30px;
+            font-size: 18px;
+            cursor: pointer;
+            margin: 10px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .cta-button:hover {
+            background: #ff2e43;
+            transform: scale(1.05);
+        }
+        
+        /* Каталог пластинок */
+        .section {
+            padding: 80px 0;
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 36px;
+            margin-bottom: 50px;
+            color: #ffffff;
+        }
+        
+        .vinyl-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+        
+        .vinyl-card {
+            background: #1a1a1a;
+            border-radius: 15px;
+            overflow: hidden;
+            transition: transform 0.3s;
+            border: 1px solid #333;
+        }
+        
+        .vinyl-card:hover {
+            transform: translateY(-10px);
+            border-color: #ff4757;
+        }
+        
+        .vinyl-image {
+            height: 250px;
+            background: #2a2a2a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+            color: #ff4757;
+        }
+        
+        .vinyl-info {
+            padding: 20px;
+        }
+        
+        .vinyl-info h3 {
+            margin-bottom: 10px;
+            color: #ffffff;
+        }
+        
+        .vinyl-info p {
+            color: #cccccc;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        
+        .price {
+            font-size: 20px;
+            font-weight: bold;
+            color: #ff4757;
+        }
+        
+        .buy-btn {
+            background: #333;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+            transition: background 0.3s;
+        }
+        
+        .buy-btn:hover {
+            background: #ff4757;
+        }
+        
+        /* Футер */
+        footer {
+            background: #000000;
+            padding: 50px 0;
+            text-align: center;
+            border-top: 1px solid #333;
+        }
+        
+        footer h3 {
+            margin-bottom: 20px;
+            color: #ffffff;
+        }
+        
+        footer p {
+            color: #cccccc;
+            margin: 5px 0;
+        }
+        
+        /* Модальное окно */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 2000;
+        }
+        
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #1a1a1a;
+            color: #f0f0f0;
+            padding: 40px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 400px;
+            border: 1px solid #333;
+        }
+        
+        .close {
+            position: absolute;
+            right: 20px;
+            top: 15px;
+            font-size: 30px;
+            cursor: pointer;
+            color: #ff4757;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #333;
+            border-radius: 5px;
+            background: #2a2a2a;
+            color: white;
+        }
+        
+        /* Личный кабинет */
+        .dashboard {
+            display: none;
+            padding: 120px 0 50px;
+            min-height: 100vh;
+        }
+        
+        .dashboard-menu {
+            background: #1a1a1a;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            display: flex;
+            gap: 20px;
+        }
+        
+        .dashboard-menu button {
+            padding: 10px 20px;
+            background: #333;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        .dashboard-menu button.active {
+            background: #ff4757;
+        }
+        
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            nav {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 15px;
+            }
+            
+            nav a {
+                margin: 0;
+            }
+            
+            .hero h1 {
+                font-size: 32px;
+            }
+            
+            .vinyl-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Шапка -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">VINYL STORE</div>
+                <nav>
+                    <a href="#vinyls">Каталог</a>
+                    <a href="#new">Новинки</a>
+                    <a href="#rare">Раритеты</a>
+                    <a href="#about">О магазине</a>
+                </nav>
+                <button class="auth-btn" onclick="showLogin()">Личный кабинет</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Главная секция -->
+    <section class="hero">
+        <div class="container">
+            <h1>Мир виниловых пластинок</h1>
+            <p>Коллекционные издания, редкие записи и новинки от лучших исполнителей. Погрузитесь в мир аналогового звука.</p>
+            <button class="cta-button" onclick="showLogin()">Войти в кабинет</button>
+            <button class="cta-button" style="background: #333;">Каталог</button>
+        </div>
+    </section>
+
+    <!-- Каталог пластинок -->
+    <section class="section" id="vinyls">
+        <div class="container">
+            <h2 class="section-title">Популярные пластинки</h2>
+            <div class="vinyl-grid">
+                <!-- Пластинка 1 -->
+                <div class="vinyl-card">
+                    <div class="vinyl-image">🎵</div>
+                    <div class="vinyl-info">
+                        <h3>The Beatles - Abbey Road</h3>
+                        <p>Оригинальное издание 1969 года</p>
+                        <div class="price">4 990 ₽</div>
+                        <button class="buy-btn">В корзину</button>
+                    </div>
+                </div>
+                
+                <!-- Пластинка 2 -->
+                <div class="vinyl-card">
+                    <div class="vinyl-image">🎶</div>
+                    <div class="vinyl-info">
+                        <h3>Pink Floyd - Dark Side</h3>
+                        <p>180 грамм, ремастированное</p>
+                        <div class="price">5 500 ₽</div>
+                        <button class="buy-btn">В корзину</button>
+                    </div>
+                </div>
+                
+                <!-- Пластинка 3 -->
+                <div class="vinyl-card">
+                    <div class="vinyl-image">🎷</div>
+                    <div class="vinyl-info">
+                        <h3>Miles Davis - Kind of Blue</h3>
+                        <p>Моно, японское издание</p>
+                        <div class="price">6 200 ₽</div>
+                        <button class="buy-btn">В корзину</button>
+                    </div>
+                </div>
+                
+                <!-- Пластинка 4 -->
+                <div class="vinyl-card">
+                    <div class="vinyl-image">🎸</div>
+                    <div class="vinyl-info">
+                        <h3>Led Zeppelin - IV</h3>
+                        <p>Коллекционное издание</p>
+                        <div class="price">5 800 ₽</div>
+                        <button class="buy-btn">В корзину</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Футер -->
+    <footer id="about">
+        <div class="container">
+            <h3>Vinyl Store</h3>
+            <p>Магазин виниловых пластинок с 2010 года</p>
+            <p>📞 +7 (999) 123-45-67</p>
+            <p>📧 info@vinylstore.ru</p>
+            <p>🕐 Ежедневно 10:00-22:00</p>
+        </div>
+    </footer>
+
+    <!-- Модальное окно входа -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="hideLogin()">&times;</span>
+            <h2>Вход в личный кабинет</h2>
+            <select id="userType">
+                <option value="customer">Покупатель</option>
+                <option value="admin">Администратор</option>
+                <option value="manager">Менеджер</option>
+            </select>
+            <input type="password" id="password" placeholder="Введите пароль">
+            <button class="cta-button" onclick="checkLogin()" style="width: 100%; margin-top: 20px;">Войти</button>
+            <p style="margin-top: 20px; color: #888; font-size: 14px; text-align: center;">
+                Пароли для демо:<br>
+                <strong>Покупатель: 1111</strong><br>
+                <strong>Менеджер: 2222</strong><br>
+                <strong>Админ: 3333</strong>
+            </p>
+        </div>
+    </div>
+
+    <!-- Личный кабинет (скрыт изначально) -->
+    <div id="dashboard" class="dashboard">
+        <div class="container">
+            <div class="dashboard-menu">
+                <button onclick="showTab('profile')" id="profileTab" class="active">Профиль</button>
+                <button onclick="showTab('orders')" id="ordersTab">Мои заказы</button>
+                <button onclick="showTab('cart')" id="cartTab">Корзина</button>
+                <button onclick="logout()" style="margin-left: auto;">Выйти</button>
+            </div>
+            
+            <div id="dashboardContent">
+                <!-- Контент будет меняться в зависимости от роли -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Данные для демо
+        const vinyls = [
+            { id: 1, title: "The Beatles - Abbey Road", price: 4990, year: 1969 },
+            { id: 2, title: "Pink Floyd - Dark Side", price: 5500, year: 1973 },
+            { id: 3, title: "Miles Davis - Kind of Blue", price: 6200, year: 1959 },
+            { id: 4, title: "Led Zeppelin - IV", price: 5800, year: 1971 },
+            { id: 5, title: "Queen - A Night at the Opera", price: 5200, year: 1975 },
+            { id: 6, title: "David Bowie - Ziggy Stardust", price: 6100, year: 1972 }
+        ];
+
+        let cart = [];
+        let currentUser = null;
+
+        // Управление модальным окном
+        function showLogin() {
+            document.getElementById('loginModal').style.display = 'block';
+        }
+        
+        function hideLogin() {
+            document.getElementById('loginModal').style.display = 'none';
+        }
+        
+        // Авторизация
+        function checkLogin() {
+            const userType = document.getElementById('userType').value;
+            const password = document.getElementById('password').value;
+            
+            const passwords = {
+                'customer': '1111',
+                'manager': '2222',
+                'admin': '3333'
+            };
+            
+            if (password === passwords[userType]) {
+                currentUser = userType;
+                
+                // Скрываем основной контент
+                document.querySelector('header').style.display = 'none';
+                document.querySelector('.hero').style.display = 'none';
+                document.querySelector('.section').style.display = 'none';
+                document.querySelector('footer').style.display = 'none';
+                
+                // Показываем ЛК
+                document.getElementById('dashboard').style.display = 'block';
+                
+                // Загружаем контент в зависимости от роли
+                loadDashboardContent(userType);
+                
+                hideLogin();
+            } else {
+                alert('Неверный пароль! Попробуйте: 1111, 2222 или 3333');
+            }
+        }
+        
+        // Загрузка контента ЛК
+        function loadDashboardContent(userType) {
+            let content = '';
+            
+            if (userType === 'customer') {
+                content = `
+                    <div class="profile-section">
+                        <h1>👤 Личный кабинет покупателя</h1>
+                        <p>Добро пожаловать, Иван!</p>
+                        
+                        <h2>Мои данные:</h2>
+                        <p>Email: ivan@example.com</p>
+                        <p>Телефон: +7 (999) 123-45-67</p>
+                        <p>Бонусы: 1 500 баллов</p>
+                        
+                        <h2>Рекомендуем:</h2>
+                        <div style="display: flex; gap: 20px; margin-top: 20px;">
+                            <div style="background: #2a2a2a; padding: 15px; border-radius: 10px;">
+                                <h3>🎸 Rock Collection</h3>
+                                <p>Специальная подборка</p>
+                            </div>
+                            <div style="background: #2a2a2a; padding: 15px; border-radius: 10px;">
+                                <h3>🎷 Jazz Essentials</h3>
+                                <p>Лучшие джазовые записи</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (userType === 'manager') {
+                content = `
+                    <div class="profile-section">
+                        <h1>📊 Кабинет менеджера</h1>
+                        
+                        <h2>Статистика за сегодня:</h2>
+                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin: 20px 0;">
+                            <div style="background: #2a2a2a; padding: 20px; border-radius: 10px; text-align: center;">
+                                <h3>Заказы</h3>
+                                <p style="font-size: 24px; color: #ff4757;">12</p>
+                            </div>
+                            <div style="background: #2a2a2a; padding: 20px; border-radius: 10px; text-align: center;">
+                                <h3>Выручка</h3>
+                                <p style="font-size: 24px; color: #ff4757;">64 800 ₽</p>
+                            </div>
+                            <div style="background: #2a2a2a; padding: 20px; border-radius: 10px; text-align: center;">
+                                <h3>Новые клиенты</h3>
+                                <p style="font-size: 24px; color: #ff4757;">5</p>
+                            </div>
+                        </div>
+                        
+                        <h2>Последние заказы:</h2>
+                        <div style="background: #2a2a2a; padding: 20px; border-radius: 10px; margin-top: 10px;">
+                            <p>1. #10025 - The Beatles - 4 990 ₽ (в обработке)</p>
+                            <p>2. #10024 - Pink Floyd - 5 500 ₽ (отправлен)</p>
+                        </div>
+                    </div>
+                `;
+            } else if (userType === 'admin') {
+                content = `
+                    <div class="profile-section">
+                        <h1>⚙️ Панель администратора</h1>
+                        
+                        <h2>Управление магазином:</h2>
+                        <div style="display: flex; flex-wrap: wrap; gap: 15px; margin: 20px 0;">
+                            <button style="padding: 15px; background: #333; color: white; border: none; border-radius: 5px;">Добавить товар</button>
+                            <button style="padding: 15px; background: #333; color: white; border: none; border-radius: 5px;">Управление заказами</button>
+                            <button style="padding: 15px; background: #333; color: white; border: none; border-radius: 5px;">Статистика продаж</button>
+                            <button style="padding: 15px; background: #333; color: white; border: none; border-radius: 5px;">Пользователи</button>
+                        </div>
+                        
+                        <h2>Финансы:</h2>
+                        <div style="background: #2a2a2a; padding: 20px; border-radius: 10px;">
+                            <p>Общая выручка: 1 240 500 ₽</p>
+                            <p>Заказов за месяц: 156</p>
+                            <p>Средний чек: 7 950 ₽</p>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            document.getElementById('dashboardContent').innerHTML = content;
+        }
+        
+        // Переключение вкладок в ЛК
+        function showTab(tabName) {
+            // Убираем активный класс у всех кнопок
+            document.querySelectorAll('.dashboard-menu button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Добавляем активный класс текущей кнопке
+            document.getElementById(tabName + 'Tab').classList.add('active');
+            
+            // Здесь можно добавить логику загрузки контента для каждой вкладки
+            if (tabName === 'orders') {
+                document.getElementById('dashboardContent').innerHTML = `
+                    <h2>📦 Мои заказы</h2>
+                    <div style="background: #2a2a2a; padding: 20px; border-radius: 10px; margin-top: 20px;">
+                        <p><strong>Заказ #10023</strong> (15.01.2024) - 14 290 ₽ ✓ Доставлен</p>
+                        <p><strong>Заказ #10018</strong> (05.01.2024) - 8 500 ₽ ✓ Доставлен</p>
+                    </div>
+                `;
+            } else if (tabName === 'cart') {
+                document.getElementById('dashboardContent').innerHTML = `
+                    <h2>🛒 Корзина</h2>
+                    <div style="background: #2a2a2a; padding: 20px; border-radius: 10px; margin-top: 20px;">
+                        <p>The Beatles - Abbey Road - 4 990 ₽</p>
+                        <p>Pink Floyd - Dark Side - 5 500 ₽</p>
+                        <hr style="margin: 15px 0; border-color: #444;">
+                        <p><strong>Итого: 10 490 ₽</strong></p>
+                        <button style="padding: 15px 30px; background: #ff4757; color: white; border: none; border-radius: 5px; margin-top: 15px;">Оформить заказ</button>
+                    </div>
+                `;
+            } else {
+                loadDashboardContent(currentUser);
+            }
+        }
+        
+        // Выход из системы
+        function logout() {
+            // Показываем основной контент
+            document.querySelector('header').style.display = 'block';
+            document.querySelector('.hero').style.display = 'block';
+            document.querySelector('.section').style.display = 'block';
+            document.querySelector('footer').style.display = 'block';
+            
+            // Скрываем ЛК
+            document.getElementById('dashboard').style.display = 'none';
+            
+            currentUser = null;
+            alert('Вы вышли из системы');
+        }
+        
+        // Закрыть модальное окно при клике вне его
+        window.onclick = function(event) {
+            const modal = document.getElementById('loginModal');
+            if (event.target === modal) {
+                hideLogin();
+            }
+        }
+        
+        // Добавление в корзину (для кнопок на пластинках)
+        document.querySelectorAll('.buy-btn').forEach((btn, index) => {
+            btn.addEventListener('click', function() {
+                const vinyl = vinyls[index];
+                cart.push(vinyl);
+                alert(`Добавлено в корзину: ${vinyl.title}`);
+            });
+        });
+    </script>
+</body>
+</html>
